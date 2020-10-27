@@ -9,7 +9,8 @@ def Read(filepath):
       BRIEF  
    """
    with open(filepath, 'r') as f:
-      reader = csv.Reader(f)
+      reader = csv.reader(f)
+      next(reader) # skip header row
       for row in reader:
          yield list(row)
          
@@ -25,13 +26,13 @@ class BipartiteGraph(object):
       """
       
       # Create nodes for the nutrients and the desired property
-      self.partition1 = gen.NUTRIENTS + [PROPERTY]
+      self.partition1 = gen.NUTRIENTS + [gen.PROPERTY]
       self.partition2 = []
       
       self.e12 = {}
       for nutrient in gen.NUTRIENTS:
          self.e12[nutrient] = []
-      self.e12[PROPERTY] = {}
+      self.e12[gen.PROPERTY] = {}
       
       for row in rows:
          name = row[0]
@@ -42,11 +43,11 @@ class BipartiteGraph(object):
          # Create an edge if the food provides at least .5 the daily %
          for i, nutrient in enumerate(gen.NUTRIENTS):
             n = float(row[i+1])
-            if n >= EDGE_THRESHOLD:
+            if n >= BipartiteGraph.EDGE_THRESHOLD:
                self.e12[nutrient].append((name, max(0, 1 - n)))
                
          # Always create an edge for the desired property node
-         self.e12[PROPERTY][name] = float(row[-1])
+         self.e12[gen.PROPERTY][name] = float(row[-1])
          
    def ShortestPath(self, nutrient):
       """
@@ -56,7 +57,7 @@ class BipartiteGraph(object):
       best_food = None
       
       for food, weight in self.e12[nutrient]:
-         distance = weight + self.e12[PROPERTY][food]
+         distance = weight + self.e12[gen.PROPERTY][food]
          
          if distance < shortest_d:
             shortest_d = distance
@@ -87,6 +88,6 @@ if __name__ == '__main__':
       elif bc == max_bc:
          super_food.append(food)
          
-   for food in super_food:
+   for food in sorted(super_food):
       print(food)
       

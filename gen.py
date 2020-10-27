@@ -24,7 +24,7 @@ def Write(fpath, n_rows):
       n_digits = len(str(n_rows-1))
       for i in range(n_rows):
          row = { NAME : 'food' + str(i).zfill(n_digits) }
-         for nutrient in NUTRIENTS:
+         for nutrient in (NUTRIENTS + [PROPERTY]):
             row[nutrient] = random.randint(0,PRECISION)/PRECISION
          writer.writerow(row)
          
@@ -32,6 +32,6 @@ if __name__ == '__main__':
    """
       BRIEF  Main execution
    """
-   gen.Write(INPUT_FILE, N_ROWS)
+   Write(INPUT_FILE, N_ROWS)
    
    
