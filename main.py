@@ -6,7 +6,7 @@ import csv
 
 def Read(filepath):
    """
-      BRIEF  
+      BRIEF  Read the csv file one row at a time
    """
    with open(filepath, 'r') as f:
       reader = csv.reader(f)

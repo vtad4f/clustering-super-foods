@@ -5,7 +5,7 @@ import os
 import random
 
 INPUT_FILE = 'input/food.csv'
-N_ROWS = 500
+N_ROWS = 10000
 
 NAME = 'name'
 NUTRIENTS = ['A', 'B', 'C', 'D', 'E', 'K', 'calcium', 'iodine', 'iron']
