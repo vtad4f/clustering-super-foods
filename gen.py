@@ -7,7 +7,8 @@ import random
 
 
 INPUT_FILE = 'input/food.csv'
-N_ROWS = 100000
+OUTPUT_FILE = 'output/superfood.csv'
+NUM_ROWS = 100000
 PRECISION = 100
 
 
@@ -22,7 +23,7 @@ def RandomData(n_rows):
          row[nutrient] = random.randint(0,PRECISION)/PRECISION
       yield row
       
-def Write(rows, fpath = INPUT_FILE):
+def Write(rows, fpath = OUTPUT_FILE):
    """
       BRIEF  Write a csv file with random data
    """
@@ -47,6 +48,6 @@ if __name__ == '__main__':
    """
       BRIEF  Main execution - Generate a random input file
    """
-   Write(RandomData(N_ROWS))
+   Write(RandomData(NUM_ROWS), INPUT_FILE)
    
    
