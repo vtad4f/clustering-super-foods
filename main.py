@@ -1,5 +1,6 @@
 
 
+import offline
 import online
 import gen
 import data
@@ -45,4 +46,5 @@ if __name__ == '__main__':
    WriteFilteredOutput(superfood)
    gen.PrettyPrint(SUPERFOOD_FILE, "Behold the super-foods! These high-nutrient foods have been selected from {0} for your convenience.".format(gen.INPUT_FILE))
    
-   
+   print()
+   offline.Graph(gen.Read(SUPERFOOD_FILE))
