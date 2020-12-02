@@ -52,9 +52,10 @@ class Graph(object):
          new = Node(row)
          for existing in self.nodes:
             distance = new.Distance(existing)
-            pair_id = frozenset((new, existing))
+            pair_id = frozenset((new.name, existing.name))
             if distance < Graph.EDGE_THRESHOLD:
                self.edges.add(pair_id)
             self.distance[pair_id] = new.Distance(existing)
          self.nodes.append(new)
+         
          
