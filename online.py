@@ -24,7 +24,7 @@ class BipartiteGraph(object):
       self.e12[data.PROPERTY] = {}
       
       for row in rows:
-         name = row[0]
+         name = row[data.NAME_COL_INDEX]
          
          # Create a node for the food item
          self.partition2.append(name)
@@ -36,7 +36,7 @@ class BipartiteGraph(object):
                self.e12[nutrient].append((name, max(0, 1 - n)))
                
          # Always create an edge for the desired property node
-         self.e12[data.PROPERTY][name] = float(row[-1])
+         self.e12[data.PROPERTY][name] = float(row[data.PROP_COL_INDEX])
          
          
    def Filter(self):
