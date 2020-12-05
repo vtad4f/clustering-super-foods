@@ -1,6 +1,27 @@
 
 
-def Totals(*clusters):
+def AverageDeficiency(*clusters):
+   """
+      BRIEF  If a user picks a random food from each cluster,
+             what is the average % daily value of nutrients they are missing?
+   """
+   deficiencies = list(_AverageDeficiencies(_Totals(clusters)))
+   return sum(deficiencies) / len(deficiencies)
+   
+   
+def _AverageDeficiencies(totals):
+   """
+      BRIEF  The average percent daily value missing
+   """
+   for total in totals:
+      deficiency = 0.0
+      for val in total:
+         if val < 1.0:
+            deficiency += 1.0 - val
+      yield deficiency / len(total)
+      
+      
+def _Totals(clusters):
    """
       BRIEF  1. Select one node from each cluster
              2. Yield the sum of values for the selected nodes
@@ -76,7 +97,20 @@ if __name__ == '__main__':
       x += 1
       
    graph = offline.Graph(gen.Read(gen.SUPERFOOD_FILE))
+   
+   # Do some measuring with the graph divided in half
    half = len(graph.nodes) // 2
-   data.PrettyPrint(Totals(graph.nodes[:half], graph.nodes[half:]))
+   clusters = [graph.nodes[:half], graph.nodes[half:]]
+   
+   totals = list(_Totals(clusters))
+   deficiencies = list(_AverageDeficiencies(totals))
+   
+   data.PrettyPrint(*totals)
+   data.PrettyPrint(*deficiencies)
+   data.PrettyPrint(sum(deficiencies) / len(deficiencies))
+   data.PrettyPrint(AverageDeficiency(*clusters))
+   
+   # Do some measuring with the whole graph
+   data.PrettyPrint(AverageDeficiency(graph.nodes))
    
    

@@ -34,13 +34,14 @@ def Write(rows, fpath):
       for row in rows:
          writer.writerow(row)
          
-def Read(fpath):
+def Read(fpath, skip_header = True):
    """
       BRIEF  Read the csv file one row at a time
    """
    with open(fpath, 'r') as f:
       reader = csv.reader(f)
-      next(reader) # skip header row
+      if skip_header:
+         next(reader)
       for row in reader:
          yield list(row)
          
@@ -49,14 +50,8 @@ def PrettyPrint(fpath, header_msg):
    """
       BRIEF  Read the csv file and print the contents
    """
-   rows = []
-   with open(fpath, 'r') as f:
-      reader = csv.reader(f)
-      for row in reader:
-         rows.append(row)
-         
    print('\n{0}\n'.format(header_msg))
-   data.PrettyPrint(rows)
+   data.PrettyPrint(*Read(fpath, False))
    
    
 if __name__ == '__main__':
