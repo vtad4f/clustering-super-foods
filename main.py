@@ -55,9 +55,6 @@ if __name__ == '__main__':
       [offline.Random, [measure.AvgDeficiency]]
    ]:
       data.PrintBanner('Clustering ({0})'.format(cluster_fcn.__name__))
-      results = [['n_clusters'] + [fcn.__name__ for fcn in measure_fcns]]
-      for metrics in graph.Cluster(max_n_clusters, n_runs, cluster_fcn, *measure_fcns):
-         results.append(metrics)
-      data.PrettyPrint(*results)
+      data.PrettyPrint(*graph.Cluster(max_n_clusters, n_runs, cluster_fcn, *measure_fcns))
       
       

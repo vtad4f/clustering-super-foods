@@ -81,16 +81,17 @@ class Graph(object):
       assert(max_n_clusters >= 2)
       assert(n_runs >= 1)
       
-      metrics = [[0.0]*len(measure_fcns) for _ in range(max_n_clusters-1)]
+      all_results = [[[] for _ in range(len(measure_fcns))] for __ in range(max_n_clusters-1)]
       for _ in range(n_runs):
          for n_clusters in range(2, max_n_clusters + 1):
             clusters = cluster_fcn(self, n_clusters)
             for i, fcn in enumerate(measure_fcns):
-               metrics[n_clusters-2][i] += fcn(*clusters) # Just add them up and we'll divide at the end
+               all_results[n_clusters-2][i].append(fcn(*clusters))
                
+      yield ['n_clusters'] + [fcn.__name__ for fcn in measure_fcns]
       yield [1] + [fcn(self.nodes) for fcn in measure_fcns] # 1 cluster = the whole graph
-      for i, metrics_for_n_clusters in enumerate(metrics):
-         yield [i+2] + [(metric / n_runs) for metric in metrics_for_n_clusters] # Average over all the runs
+      for i, results_for_n_clusters in enumerate(all_results):
+         yield [i+2] + [(sum(results) / len(results)) for results in results_for_n_clusters] # Average over all the runs
          
          
 def Random(graph, n_clusters):
