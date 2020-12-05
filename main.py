@@ -49,13 +49,15 @@ if __name__ == '__main__':
    
    graph = offline.Graph(gen.Read(gen.SUPERFOOD_FILE))
    max_n_clusters = 5
-   n_runs = 20
+   n_runs = 5
    
-   for cluster_fcn, measure_fcn in [
-      (offline.Random, measure.AvgDeficiency)
+   for cluster_fcn, measure_fcns in [
+      [offline.Random, [measure.AvgDeficiency]]
    ]:
       data.PrintBanner('Clustering ({0})'.format(cluster_fcn.__name__))
-      for i, metric in enumerate(graph.Cluster(cluster_fcn, measure_fcn, max_n_clusters, n_runs)):
-         print("N clusters = {0}, {1} = {2}".format(i+1, measure_fcn.__name__, data.PrettyString(metric)))
-         
-         
+      results = [['n_clusters'] + [fcn.__name__ for fcn in measure_fcns]]
+      for metrics in graph.Cluster(max_n_clusters, n_runs, cluster_fcn, *measure_fcns):
+         results.append(metrics)
+      data.PrettyPrint(*results)
+      
+      

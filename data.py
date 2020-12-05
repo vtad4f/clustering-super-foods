@@ -1,5 +1,8 @@
 
 
+import sys
+
+
 NAME = 'name'
 NUTRIENTS = ['A', 'B', 'C', 'D', 'E', 'K', 'calcium', 'iodine', 'iron']
 PROPERTY = 'calories'
@@ -15,6 +18,7 @@ def PrintBanner(msg, delim = ''):
       BRIEF  Print a banner with 
    """
    print('{0}\n{1}\n{0}'.format(delim*80, msg))
+   sys.stdout.flush()
    
    
 def PrettyPrint(*rows):
@@ -40,7 +44,9 @@ def PrettyPrint(*rows):
       for row in rows:
          print(PrettyString(row))
          
-         
+   sys.stdout.flush()
+   
+   
 def PrettyString(val):
    """
       BRIEF  If it's a float, reduce to 2 digits

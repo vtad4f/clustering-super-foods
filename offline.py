@@ -74,21 +74,23 @@ class Graph(object):
          self.nodes.append(new)
          
          
-   def Cluster(self, cluster_fcn, measure_fcn, max_n_clusters, n_runs = 1):
+   def Cluster(self, max_n_clusters, n_runs, cluster_fcn, *measure_fcns):
       """
-         BRIEF  Given a callback
+         BRIEF  Average metrics across every run, for each number of clusters
       """
       assert(max_n_clusters >= 2)
       assert(n_runs >= 1)
       
-      totals = [0.0]*(max_n_clusters-1)
+      metrics = [[0.0]*len(measure_fcns) for _ in range(max_n_clusters-1)]
       for _ in range(n_runs):
          for n_clusters in range(2, max_n_clusters + 1):
-            totals[n_clusters-2] += measure_fcn(*cluster_fcn(self, n_clusters))
-            
-      yield measure_fcn(self.nodes) # 1 cluster = the whole graph
-      for total in totals:
-         yield total / n_runs # Average over all the runs
+            clusters = cluster_fcn(self, n_clusters)
+            for i, fcn in enumerate(measure_fcns):
+               metrics[n_clusters-2][i] += fcn(*clusters) # Just add them up and we'll divide at the end
+               
+      yield [1] + [fcn(self.nodes) for fcn in measure_fcns] # 1 cluster = the whole graph
+      for i, metrics_for_n_clusters in enumerate(metrics):
+         yield [i+2] + [(metric / n_runs) for metric in metrics_for_n_clusters] # Average over all the runs
          
          
 def Random(graph, n_clusters):
