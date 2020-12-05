@@ -27,17 +27,23 @@ def _Totals(clusters):
              2. Yield the sum of values for the selected nodes
              3. Iterate over every possible combination
    """
-   vals_per_node = len(clusters[0][0])
    iterator = MultiBaseNumber(*map(len, clusters))
    while iterator:
-      total = [0.0]*vals_per_node
-      for cluster, node in enumerate(iterator):
-         for i, val in enumerate(clusters[cluster][node].vals):
-            total[i] += val
-      yield total
+      yield _SumRows(*[clusters[c][n] for c,n in enumerate(iterator)])
       iterator += 1
       
       
+def _SumRows(*rows):
+   """
+      BRIEF  Total each of the columns for all the rows
+   """
+   total = [0.0]*len(rows[0])
+   for row in rows:
+      for i, col in enumerate(row):
+         total[i] += col
+   return total
+   
+   
 class MultiBaseNumber(object):
    """
       BRIEF  Every digit in this number has a different base
