@@ -23,7 +23,11 @@ if __name__ == '__main__':
    nx.draw_circular(nx_g)
    plt.show()
    
-   nx.draw_circular(nx.complement(nx_g))
+   complement = nx.complement(nx_g)
+   nx.draw_circular(complement)
    plt.show()
+   
+   print('{0:<10} = {1}'.format('e(G)' , nx_g.size()))
+   print('{0:<10} = {1}'.format('e(~G)', complement.size()))
    
    
