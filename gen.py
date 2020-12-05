@@ -46,11 +46,10 @@ def Read(fpath, skip_header = True):
          yield list(row)
          
          
-def PrettyPrint(fpath, header_msg):
+def PrettyPrint(fpath):
    """
       BRIEF  Read the csv file and print the contents
    """
-   print('\n{0}\n'.format(header_msg))
    data.PrettyPrint(*Read(fpath, False))
    
    

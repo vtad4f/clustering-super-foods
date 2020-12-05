@@ -1,6 +1,7 @@
 
 
 import data
+import random
 
 
 class Node(object):
@@ -73,3 +74,36 @@ class Graph(object):
          self.nodes.append(new)
          
          
+   def Cluster(self, cluster_fcn, measure_fcn, max_n_clusters, n_runs = 1):
+      """
+         BRIEF  Given a callback
+      """
+      assert(max_n_clusters >= 2)
+      assert(n_runs >= 1)
+      
+      totals = [0.0]*(max_n_clusters-1)
+      for _ in range(n_runs):
+         for n_clusters in range(2, max_n_clusters + 1):
+            totals[n_clusters-2] += measure_fcn(*cluster_fcn(self, n_clusters))
+            
+      yield measure_fcn(self.nodes) # 1 cluster = the whole graph
+      for total in totals:
+         yield total / n_runs # Average over all the runs
+         
+         
+def Random(graph, n_clusters):
+   """
+      BRIEF  This will randomly slice the graph into some number of clusters
+             of mostly equal size. The last cluster(s) will be smaller if the
+             nodes can't be divided evenly.
+   """
+   assert(n_clusters > 0)
+   
+   node_indices = list(range(len(graph.nodes)))
+   random.shuffle(node_indices)
+   
+   chunk_size = 1 + len(graph.nodes) // n_clusters
+   for i in range(n_clusters):
+      yield [graph.nodes[i] for i in node_indices[i*chunk_size:(i+1)*chunk_size]]
+      
+      

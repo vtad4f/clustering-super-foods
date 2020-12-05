@@ -10,6 +10,13 @@ NAME_COL_INDEX = 0
 PROP_COL_INDEX = -1
 
 
+def PrintBanner(msg, delim = ''):
+   """
+      BRIEF  Print a banner with 
+   """
+   print('{0}\n{1}\n{0}'.format(delim*80, msg))
+   
+   
 def PrettyPrint(*rows):
    """
       BRIEF  Pretty print the rows of values
@@ -33,9 +40,7 @@ def PrettyPrint(*rows):
       for row in rows:
          print(PrettyString(row))
          
-   print()
-   
-   
+         
 def PrettyString(val):
    """
       BRIEF  If it's a float, reduce to 2 digits
