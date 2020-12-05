@@ -28,6 +28,20 @@ class Node(object):
       return sum((v1-v2)**2 for (v1,v2) in zip(self.vals, other.vals)) ** .5
       
       
+   def __getitem__(self, i):
+      """
+         BRIEF  Provide access to the values
+      """
+      return self.vals[i]
+      
+      
+   def __len__(self):
+      """
+         BRIEF  Provide access to the number of values
+      """
+      return len(self.vals)
+      
+      
    def __hash__(self):
       """
          BRIEF  Used as a 'unique' ID when storing an instance of this class

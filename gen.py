@@ -6,6 +6,7 @@ import os
 import random
 
 
+SUPERFOOD_FILE = 'output/superfood.csv'
 INPUT_FILE = 'input/food.csv'
 NUM_ROWS = 100000
 PRECISION = 100
@@ -54,17 +55,10 @@ def PrettyPrint(fpath, header_msg):
       for row in reader:
          rows.append(row)
          
-   width = [0]*len(rows[0])
-   for row in rows:
-      for i, col in enumerate(row):
-         if len(col) > width[i]:
-            width[i] = len(col)
-            
    print('\n{0}\n'.format(header_msg))
-   for row in rows:
-      print('  '.join(('{0:<' + str(width[i]) + '}').format(col) for i, col in enumerate(row)))
-      
-      
+   data.PrettyPrint(rows)
+   
+   
 if __name__ == '__main__':
    """
       BRIEF  Main execution - Generate a random input file

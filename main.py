@@ -1,5 +1,6 @@
 
 
+import measure
 import offline
 import online
 import gen
@@ -7,7 +8,6 @@ import data
 import itertools
 
 
-SUPERFOOD_FILE = 'output/superfood.csv'
 NUM_FILTERS = 5
 
 
@@ -35,7 +35,7 @@ def WriteFilteredOutput(superfood):
    for row in gen.Read(gen.INPUT_FILE):
       if row[data.NAME_COL_INDEX] in names:
          rows.append({col:row[i] for i, col in enumerate(data.ALL_COLS)})
-   gen.Write(rows, SUPERFOOD_FILE)
+   gen.Write(rows, gen.SUPERFOOD_FILE)
    
    
 if __name__ == '__main__':
@@ -44,6 +44,8 @@ if __name__ == '__main__':
    """
    superfood = itertools.chain.from_iterable(online.BipartiteGraph(food).Filter() for food in ReadInChunks())
    WriteFilteredOutput(superfood)
-   gen.PrettyPrint(SUPERFOOD_FILE, "Behold the super-foods! These high-nutrient foods have been selected from {0} for your convenience.".format(gen.INPUT_FILE))
+   gen.PrettyPrint(gen.SUPERFOOD_FILE, "Behold the super-foods! These high-nutrient foods have been selected from {0} for your convenience.".format(gen.INPUT_FILE))
    
-   offline.Graph(gen.Read(SUPERFOOD_FILE))
+   offline.Graph(gen.Read(gen.SUPERFOOD_FILE))
+   
+   

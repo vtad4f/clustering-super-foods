@@ -1,6 +1,5 @@
 
 
-import main
 import offline
 import gen
 import matplotlib.pyplot as plt
@@ -11,7 +10,7 @@ if __name__ == '__main__':
    """
       BRIEF  Main execution - draw the superfoods graph
    """
-   my_g = offline.Graph(gen.Read(main.SUPERFOOD_FILE))
+   my_g = offline.Graph(gen.Read(gen.SUPERFOOD_FILE))
    nx_g = nx.Graph()
    
    for node in my_g.nodes:
