@@ -101,11 +101,11 @@ class Graph(object):
       assert(max_n_clusters >= 2)
       assert(min_n_clusters <= max_n_clusters)
       assert(n_runs >= 1)
-               
+      
       yield ['n_clusters'] + [fcn.__name__ for fcn in measure_fcns]
       if min_n_clusters <= 1:
-         yield [1] + [[fcn(self.nodes), 0.0] for fcn in measure_fcns] # 1 cluster = the whole graph
          min_n_clusters += 1
+         yield [1] + [[fcn(self.nodes), 0.0] for fcn in measure_fcns] # 1 cluster = the whole graph
          
       all_results = [[[] for _ in range(len(measure_fcns))] for __ in range(max_n_clusters-1)]
       for _ in range(n_runs):
@@ -134,11 +134,24 @@ def Random(graph, n_clusters):
       
 def KMeans(graph, n_clusters):
    """
-      BRIEF  
+      BRIEF  Use the sklearn package to attempt KMeans clustering
    """
-   kmeans = sk.KMeans(n_clusters).fit([node.vals for node in graph.nodes])
    clusters = [[] for _ in range(n_clusters)]
+   kmeans = sk.KMeans(n_clusters).fit([node.vals for node in graph.nodes])
    for node in graph.nodes:
       distances = [EuclideanDistance(node.vals, center) for center in kmeans.cluster_centers_]
       clusters[distances.index(min(distances))].append(node)
    return clusters
+   
+   
+def Spectral(graph, n_clusters):
+   """
+      BRIEF  Use the sklearn package to attempt Spectral clustering
+   """
+   clusters = [[] for _ in range(n_clusters)]
+   spectral = sk.SpectralClustering(n_clusters, assign_labels='discretize').fit([node.vals for node in graph.nodes])
+   for i, cluster_i in enumerate(spectral.labels_):
+      clusters[cluster_i].append(graph.nodes[i])
+   return clusters
+   
+   
