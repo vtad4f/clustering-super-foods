@@ -1,6 +1,7 @@
 
 
 import data
+import sklearn.cluster as sk
 import random
 
 
@@ -92,24 +93,29 @@ class Graph(object):
          self.nodes.append(new)
          
          
-   def Cluster(self, max_n_clusters, n_runs, cluster_fcn, *measure_fcns):
+   def Cluster(self, range_n_clusters, n_runs, cluster_fcn, *measure_fcns):
       """
          BRIEF  Average metrics across every run, for each number of clusters
       """
+      min_n_clusters, max_n_clusters = range_n_clusters
       assert(max_n_clusters >= 2)
+      assert(min_n_clusters <= max_n_clusters)
       assert(n_runs >= 1)
-      
-      all_results = [[[] for _ in range(len(measure_fcns))] for __ in range(max_n_clusters-1)]
-      for _ in range(n_runs):
-         for n_clusters in range(2, max_n_clusters + 1):
-            clusters = cluster_fcn(self, n_clusters)
-            for i, fcn in enumerate(measure_fcns):
-               all_results[n_clusters-2][i].append(fcn(*clusters))
                
       yield ['n_clusters'] + [fcn.__name__ for fcn in measure_fcns]
-      yield [1] + [[fcn(self.nodes), 0.0] for fcn in measure_fcns] # 1 cluster = the whole graph
+      if min_n_clusters <= 1:
+         yield [1] + [[fcn(self.nodes), 0.0] for fcn in measure_fcns] # 1 cluster = the whole graph
+         min_n_clusters += 1
+         
+      all_results = [[[] for _ in range(len(measure_fcns))] for __ in range(max_n_clusters-1)]
+      for _ in range(n_runs):
+         for n_clusters in range(min_n_clusters, max_n_clusters + 1):
+            clusters = cluster_fcn(self, n_clusters)
+            for i, fcn in enumerate(measure_fcns):
+               all_results[n_clusters-min_n_clusters][i].append(fcn(*clusters))
+               
       for i, per_clusters_n in enumerate(all_results):
-         yield [i+2] + [[fcn(results) for fcn in EVAL_FCNS] for results in per_clusters_n]
+         yield [i+min_n_clusters] + [[fcn(results) for fcn in EVAL_FCNS] for results in per_clusters_n]
          
          
 def Random(graph, n_clusters):
@@ -118,8 +124,6 @@ def Random(graph, n_clusters):
              of mostly equal size. The last cluster(s) will be smaller if the
              nodes can't be divided evenly.
    """
-   assert(n_clusters > 0)
-   
    node_indices = list(range(len(graph.nodes)))
    random.shuffle(node_indices)
    
@@ -128,3 +132,13 @@ def Random(graph, n_clusters):
       yield [graph.nodes[i] for i in node_indices[i*chunk_size:(i+1)*chunk_size]]
       
       
+def KMeans(graph, n_clusters):
+   """
+      BRIEF  
+   """
+   kmeans = sk.KMeans(n_clusters).fit([node.vals for node in graph.nodes])
+   clusters = [[] for _ in range(n_clusters)]
+   for node in graph.nodes:
+      distances = [EuclideanDistance(node.vals, center) for center in kmeans.cluster_centers_]
+      clusters[distances.index(min(distances))].append(node)
+   return clusters
