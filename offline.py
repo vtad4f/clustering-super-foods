@@ -19,7 +19,7 @@ def StdDev(vals):
    return (sum((val-avg)**2 for val in vals) / len(vals)) ** .5
 
    
-FCNS = [Avg, StdDev]
+EVAL_FCNS = [Avg, StdDev]
 
 
 def EuclideanDistance(n1_vals, n2_vals):
@@ -109,7 +109,7 @@ class Graph(object):
       yield ['n_clusters'] + [fcn.__name__ for fcn in measure_fcns]
       yield [1] + [[fcn(self.nodes), 0.0] for fcn in measure_fcns] # 1 cluster = the whole graph
       for i, per_clusters_n in enumerate(all_results):
-         yield [i+2] + [[fcn(results) for fcn in FCNS] for results in per_clusters_n] # Average over all the runs
+         yield [i+2] + [[fcn(results) for fcn in EVAL_FCNS] for results in per_clusters_n]
          
          
 def Random(graph, n_clusters):

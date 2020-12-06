@@ -53,9 +53,9 @@ def PrettyString(val):
       BRIEF  If it's a float, reduce to 2 digits
    """
    if isinstance(val, list) or isinstance(val, tuple):
-      for i, item in enumerate(val):
-         val[i] = PrettyString(item)
-      return "({0})".format(', '.join(val))
+      return "({0})".format(', '.join([PrettyString(item) for item in val]))
+   elif callable(val):
+      return val.__name__
    else:
       val = str(val)
       try:

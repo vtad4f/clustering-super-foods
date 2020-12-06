@@ -49,12 +49,11 @@ if __name__ == '__main__':
    
    graph = offline.Graph(gen.Read(gen.SUPERFOOD_FILE), offline.EuclideanDistance)
    max_n_clusters = 5
-   n_runs = 5
    
-   for cluster_fcn, measure_fcns in [
-      [offline.Random, [measure.Deficiency]]
+   for cluster_fcn, n_runs, measure_fcns in [
+      [offline.Random, 5, [measure.Deficiency]]
    ]:
-      data.PrintBanner('-', 'Clustering - {0} {1}'.format(cluster_fcn.__name__, data.PrettyString([func.__name__ for func in offline.FCNS])))
+      data.PrintBanner('-', 'Clustering - {0}, n_runs={1} {2}'.format(cluster_fcn.__name__, n_runs, data.PrettyString(offline.EVAL_FCNS)))
       data.PrettyPrint(*graph.Cluster(max_n_clusters, n_runs, cluster_fcn, *measure_fcns))
       
       
