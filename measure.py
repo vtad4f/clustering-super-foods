@@ -5,7 +5,7 @@ def Deficiency(*clusters):
       BRIEF  If a user picks a random food from each cluster,
              what is the average % daily value of nutrients they are missing?
    """
-   deficiencies = list(_AvgDeficiencies(_Totals(clusters)))
+   deficiencies = list(_AvgDeficiencies(_Totals(*clusters)))
    return sum(deficiencies) / len(deficiencies)
    
    
@@ -21,7 +21,7 @@ def _AvgDeficiencies(totals):
       yield deficiency / len(total)
       
       
-def _Totals(clusters):
+def _Totals(*clusters):
    """
       BRIEF  1. Select one node from each cluster
              2. Yield the sum of values for the selected nodes
@@ -108,7 +108,7 @@ if __name__ == '__main__':
    half = len(graph.nodes) // 2
    clusters = [graph.nodes[:half], graph.nodes[half:]]
    
-   totals = list(_Totals(clusters))
+   totals = list(_Totals(*clusters))
    deficiencies = list(_AvgDeficiencies(totals))
    
    data.PrettyPrint(*totals)
@@ -121,6 +121,8 @@ if __name__ == '__main__':
    print()
    
    # Do some measuring with the whole graph
+   data.PrettyPrint(*_AvgDeficiencies(_Totals(graph.nodes)))
+   print()
    data.PrettyPrint(Deficiency(graph.nodes))
    
    
