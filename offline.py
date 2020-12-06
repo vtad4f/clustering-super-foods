@@ -4,6 +4,35 @@ import data
 import random
 
 
+def Avg(vals):
+   """
+      BRIEF  Get the average of the set of values
+   """
+   return sum(vals) / len(vals)
+   
+   
+def StdDev(vals):
+   """
+      BRIEF  Get the standard deviation of the set of values
+   """
+   avg = Avg(vals)
+   return (sum((val-avg)**2 for val in vals) / len(vals)) ** .5
+
+   
+FCNS = [Avg, StdDev]
+
+
+def EuclideanDistance(n1_vals, n2_vals):
+   """
+      BRIEF  Get the euclidean distance between the nodes w/ normalized values
+             The maximum possible value returned here is 3
+               1.0 max distance per value, squared is still 1.0
+               9 values
+               sqrt(9) = 3
+   """
+   return sum((v1-v2)**2 for (v1,v2) in zip(n1_vals, n2_vals)) ** .5
+   
+   
 class Node(object):
    """
       BRIEF  A data container, used to represent a single food item
@@ -16,17 +45,6 @@ class Node(object):
       self.name = row[data.NAME_COL_INDEX]
       self.vals = list(map(float, row[data.NAME_COL_INDEX+1:data.PROP_COL_INDEX]))
       self.prop = float(row[data.PROP_COL_INDEX])
-      
-      
-   def Distance(self, other):
-      """
-         BRIEF  Get the euclidean distance between the nodes w/ normalized values
-                The maximum possible value returned here is 3
-                  1.0 max distance per value, squared is still 1.0
-                  9 values
-                  sqrt(9) = 3
-      """
-      return sum((v1-v2)**2 for (v1,v2) in zip(self.vals, other.vals)) ** .5
       
       
    def __getitem__(self, i):
@@ -56,7 +74,7 @@ class Graph(object):
    """
    EDGE_THRESHOLD = 1.5
    
-   def __init__(self, rows):
+   def __init__(self, rows, distance_fcn):
       """
          BRIEF  Cache nodes and edges for each row
       """
@@ -66,11 +84,11 @@ class Graph(object):
       for row in rows:
          new = Node(row)
          for existing in self.nodes:
-            distance = new.Distance(existing)
+            distance = distance_fcn(new, existing)
             pair_id = frozenset((new.name, existing.name))
             if distance < Graph.EDGE_THRESHOLD:
                self.edges.add(pair_id)
-            self.distance[pair_id] = new.Distance(existing)
+            self.distance[pair_id] = distance
          self.nodes.append(new)
          
          
@@ -89,9 +107,9 @@ class Graph(object):
                all_results[n_clusters-2][i].append(fcn(*clusters))
                
       yield ['n_clusters'] + [fcn.__name__ for fcn in measure_fcns]
-      yield [1] + [fcn(self.nodes) for fcn in measure_fcns] # 1 cluster = the whole graph
-      for i, results_for_n_clusters in enumerate(all_results):
-         yield [i+2] + [(sum(results) / len(results)) for results in results_for_n_clusters] # Average over all the runs
+      yield [1] + [[fcn(self.nodes), 0.0] for fcn in measure_fcns] # 1 cluster = the whole graph
+      for i, per_clusters_n in enumerate(all_results):
+         yield [i+2] + [[fcn(results) for fcn in FCNS] for results in per_clusters_n] # Average over all the runs
          
          
 def Random(graph, n_clusters):

@@ -13,9 +13,10 @@ NAME_COL_INDEX = 0
 PROP_COL_INDEX = -1
 
 
-def PrintBanner(msg, delim = ''):
+def PrintBanner(delim, msg):
    """
-      BRIEF  Print a banner with 
+      BRIEF  Print a message in between two 'delim' lines.
+             If delim is an empty string, the two lines will be empty.
    """
    print('{0}\n{1}\n{0}'.format(delim*80, msg))
    sys.stdout.flush()
@@ -51,14 +52,19 @@ def PrettyString(val):
    """
       BRIEF  If it's a float, reduce to 2 digits
    """
-   val = str(val)
-   try:
-      int(val)
-   except ValueError:
+   if isinstance(val, list) or isinstance(val, tuple):
+      for i, item in enumerate(val):
+         val[i] = PrettyString(item)
+      return "({0})".format(', '.join(val))
+   else:
+      val = str(val)
       try:
-         val = "{:.2f}".format(float(val))
+         int(val)
       except ValueError:
-         pass
-   return val
-   
-   
+         try:
+            val = "{:.2f}".format(float(val))
+         except ValueError:
+            pass
+      return val
+      
+      

@@ -44,17 +44,17 @@ if __name__ == '__main__':
    """
    superfood = itertools.chain.from_iterable(online.BipartiteGraph(food).Filter() for food in ReadInChunks())
    WriteFilteredOutput(superfood)
-   data.PrintBanner("These high-nutrient [super]foods have been selected from {0} for your convenience.".format(gen.INPUT_FILE))
+   data.PrintBanner('-', "High-nutrient [super]foods filtered from {0}".format(gen.INPUT_FILE))
    gen.PrettyPrint(gen.SUPERFOOD_FILE)
    
-   graph = offline.Graph(gen.Read(gen.SUPERFOOD_FILE))
+   graph = offline.Graph(gen.Read(gen.SUPERFOOD_FILE), offline.EuclideanDistance)
    max_n_clusters = 5
    n_runs = 5
    
    for cluster_fcn, measure_fcns in [
-      [offline.Random, [measure.AvgDeficiency]]
+      [offline.Random, [measure.Deficiency]]
    ]:
-      data.PrintBanner('Clustering ({0})'.format(cluster_fcn.__name__))
+      data.PrintBanner('-', 'Clustering - {0} {1}'.format(cluster_fcn.__name__, data.PrettyString([func.__name__ for func in offline.FCNS])))
       data.PrettyPrint(*graph.Cluster(max_n_clusters, n_runs, cluster_fcn, *measure_fcns))
       
       
