@@ -23,17 +23,6 @@ def StdDev(vals):
 EVAL_FCNS = [Avg, StdDev]
 
 
-def EuclideanDistance(n1_vals, n2_vals):
-   """
-      BRIEF  Get the euclidean distance between the nodes w/ normalized values
-             The maximum possible value returned here is 3
-               1.0 max distance per value, squared is still 1.0
-               9 values
-               sqrt(9) = 3
-   """
-   return sum((v1-v2)**2 for (v1,v2) in zip(n1_vals, n2_vals)) ** .5
-   
-   
 class Node(object):
    """
       BRIEF  A data container, used to represent a single food item
@@ -69,30 +58,60 @@ class Node(object):
       return hash(self.name)
       
       
+class Euclidean:
+   def Distance(n1_vals, n2_vals):
+      """
+         BRIEF  Get the euclidean distance between the nodes w/ normalized values
+                The maximum possible value returned here is 3
+                  1.0 max distance per value, squared is still 1.0
+                  9 values
+                  sqrt(9) = 3
+      """
+      return sum((v1-v2)**2 for (v1,v2) in zip(n1_vals, n2_vals)) ** .5
+      
+   MAX_DISTANCE = Distance(Node([0.0]*len(data.ALL_COLS)), Node([1.0]*len(data.ALL_COLS)))
+   
+   
 class Graph(object):
    """
       BRIEF  This graph will be used for clustering
    """
-   EDGE_THRESHOLD = 1.5
    
-   def __init__(self, rows, distance_fcn):
+   def __init__(self, rows):
       """
-         BRIEF  Cache nodes and edges for each row
+         BRIEF  For now just create one node for each row
       """
-      self.nodes = []
-      self.edges = set()
-      self.distance = {}
-      for row in rows:
-         new = Node(row)
-         for existing in self.nodes:
-            distance = distance_fcn(new, existing)
-            pair_id = frozenset((new.name, existing.name))
-            if distance < Graph.EDGE_THRESHOLD:
-               self.edges.add(pair_id)
-            self.distance[pair_id] = distance
-         self.nodes.append(new)
+      self.nodes = [Node(row) for row in rows]
+      self.edges = {}
+      
+      
+   def SetEdges(self, distance_type, percent_threshold):
+      """
+         BRIEF  Create edges between similar nodes
          
+         PARAM distance_type  Is a class with a Distance() method and a
+                              MAX_DISTANCE value
          
+         PARAM percent_threshold  A percent value [0.0, 1.0] of the maximum
+                                  possible distance
+      """
+      distance_fcn, max_distance = distance_type.Distance, distance_type.MAX_DISTANCE
+      distance_threshold = max_distance * percent_threshold
+      
+      self.edges.clear()
+      
+      # Iterate over all the nodes
+      n_nodes = len(self.nodes)
+      for i in range(n_nodes):
+         for j in range(i+1, n_nodes):
+            n1, n2 = self.nodes[i], self.nodes[j]
+            
+            # Calculate distances and create edges if the nodes are similar
+            distance = distance_fcn(n1, n2)
+            if distance < distance_threshold:
+               self.edges[frozenset((n1.name, n2.name))] = distance
+               
+               
    def Cluster(self, range_n_clusters, n_runs, cluster_fcn, *measure_fcns):
       """
          BRIEF  Average metrics across every run, for each number of clusters
@@ -118,7 +137,7 @@ class Graph(object):
          yield [i+min_n_clusters] + [[fcn(results) for fcn in EVAL_FCNS] for results in per_clusters_n]
          
          
-def Random(graph, n_clusters):
+def RandomClustering(graph, n_clusters):
    """
       BRIEF  This will randomly slice the graph into some number of clusters
              of mostly equal size. The last cluster(s) will be smaller if the
@@ -132,19 +151,19 @@ def Random(graph, n_clusters):
       yield [graph.nodes[i] for i in node_indices[i*chunk_size:(i+1)*chunk_size]]
       
       
-def KMeans(graph, n_clusters):
+def KMeansClustering(graph, n_clusters):
    """
       BRIEF  Use the sklearn package to attempt KMeans clustering
    """
    clusters = [[] for _ in range(n_clusters)]
    kmeans = sk.KMeans(n_clusters).fit([node.vals for node in graph.nodes])
    for node in graph.nodes:
-      distances = [EuclideanDistance(node.vals, center) for center in kmeans.cluster_centers_]
+      distances = [Euclidean.Distance(node.vals, center) for center in kmeans.cluster_centers_]
       clusters[distances.index(min(distances))].append(node)
    return clusters
    
    
-def Spectral(graph, n_clusters):
+def SpectralClustering(graph, n_clusters):
    """
       BRIEF  Use the sklearn package to attempt Spectral clustering
    """
@@ -153,5 +172,11 @@ def Spectral(graph, n_clusters):
    for i, cluster_i in enumerate(spectral.labels_):
       clusters[cluster_i].append(graph.nodes[i])
    return clusters
+   
+   
+def GraphClustering(graph):
+   """
+      BRIEF  
+   """
    
    

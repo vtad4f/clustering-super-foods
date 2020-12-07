@@ -47,14 +47,14 @@ if __name__ == '__main__':
    data.PrintBanner('-', "High-nutrient [super]foods filtered from {0}".format(gen.INPUT_FILE))
    gen.PrettyPrint(gen.SUPERFOOD_FILE)
    
-   graph = offline.Graph(gen.Read(gen.SUPERFOOD_FILE), offline.EuclideanDistance)
+   graph = offline.Graph(gen.Read(gen.SUPERFOOD_FILE))
    
    for cluster_fcn, range_n_clusters, n_runs in [
-      (offline.Random,  (1, 5), 5),
-      (offline.KMeans,  (2, 4), 5),
-      (offline.Spectral,(2, 4), 5)
+      (offline.RandomClustering,  (1, 5), 5),
+      (offline.KMeansClustering,  (2, 4), 5),
+      (offline.SpectralClustering,(2, 4), 5)
    ]:
-      data.PrintBanner('-', 'Clustering - {0}, n_runs={1} {2}'.format(cluster_fcn.__name__, n_runs, data.PrettyString(offline.EVAL_FCNS)))
+      data.PrintBanner('-', '{0}, {1} runs {2}'.format(*map(data.PrettyString, [cluster_fcn, n_runs, offline.EVAL_FCNS])))
       data.PrettyPrint(*graph.Cluster(range_n_clusters, n_runs, cluster_fcn, measure.Deficiency))
       
       

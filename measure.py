@@ -102,7 +102,7 @@ if __name__ == '__main__':
       print(x)
       x += 1
       
-   graph = offline.Graph(gen.Read(gen.SUPERFOOD_FILE), offline.EuclideanDistance)
+   graph = offline.Graph(gen.Read(gen.SUPERFOOD_FILE))
    
    # Do some measuring with the graph divided in half
    half = len(graph.nodes) // 2
