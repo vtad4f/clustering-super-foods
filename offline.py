@@ -173,10 +173,22 @@ def SpectralClustering(graph, n_clusters):
    return clusters
    
    
-def GraphClustering(graph):
+def GraphClustering1(graph, n_clusters):
    """
-      BRIEF  
+      BRIEF  A very simple approach: cherry-pick the nodes with high degrees
    """
-   
+   clusters = [[] for _ in range(n_clusters)]
+   half = len(graph.nodes) // 2
+   degrees = {n.name:0 for n in graph.nodes}
+   for (n1, n2) in graph.edges:
+      degrees[n1] += 1
+      degrees[n2] += 1
+   nodes = {node.name:node for node in graph.nodes}
+   for degree, node in sorted([(degree, node) for node, degree in degrees.items()]):
+      if len(clusters[0]) < half:
+         clusters[0].append(nodes[node])
+      else:
+         clusters[1].append(nodes[node])
+   return clusters
    
    
