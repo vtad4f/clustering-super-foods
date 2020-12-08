@@ -48,6 +48,7 @@ if __name__ == '__main__':
    gen.PrettyPrint(gen.SUPERFOOD_FILE)
    
    graph = offline.Graph(gen.Read(gen.SUPERFOOD_FILE))
+   graph.SetEdges(offline.Euclidean, .3)
    
    for cluster_fcn, range_n_clusters, n_runs in [
       (offline.RandomClustering,  (1, 5), 5),

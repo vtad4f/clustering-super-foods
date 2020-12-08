@@ -95,19 +95,18 @@ class Graph(object):
          PARAM percent_threshold  A percent value [0.0, 1.0] of the maximum
                                   possible distance
       """
-      distance_fcn, max_distance = distance_type.Distance, distance_type.MAX_DISTANCE
-      distance_threshold = max_distance * percent_threshold
+      n_nodes = len(self.nodes)
+      distance_threshold = distance_type.MAX_DISTANCE * percent_threshold
       
       self.edges.clear()
       
       # Iterate over all the nodes
-      n_nodes = len(self.nodes)
       for i in range(n_nodes):
          for j in range(i+1, n_nodes):
             n1, n2 = self.nodes[i], self.nodes[j]
             
             # Calculate distances and create edges if the nodes are similar
-            distance = distance_fcn(n1, n2)
+            distance = distance_type.Distance(n1, n2)
             if distance < distance_threshold:
                self.edges[frozenset((n1.name, n2.name))] = distance
                
@@ -178,5 +177,6 @@ def GraphClustering(graph):
    """
       BRIEF  
    """
+   
    
    
