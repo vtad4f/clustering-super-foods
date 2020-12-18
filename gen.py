@@ -7,7 +7,7 @@ import random
 
 
 SUPERFOOD_FILE = 'output/superfood.csv'
-INPUT_FILE = 'input/food.csv'
+INPUT_FILE = 'input/random.csv'
 NUM_ROWS = 100000
 PRECISION = 100
 
@@ -53,10 +53,17 @@ def PrettyPrint(fpath):
    data.PrettyPrint(*Read(fpath, False))
    
    
-if __name__ == '__main__':
+def Main():
    """
-      BRIEF  Main execution - Generate a random input file
+      BRIEF  Generate a random input file
    """
    Write(RandomData(NUM_ROWS), INPUT_FILE)
+   
+   
+if __name__ == '__main__':
+   """
+      BRIEF  Main execution
+   """
+   Main()
    
    

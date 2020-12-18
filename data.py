@@ -3,8 +3,17 @@
 import sys
 
 
-NAME = 'name'
-NUTRIENTS = ['A', 'B', 'C', 'D', 'E', 'K', 'calcium', 'iodine', 'iron']
+NAME      = 'name'
+VIT_A     = 'A'
+VIT_B12   = 'B12'
+VIT_B6    = 'B6'
+VIT_C     = 'C'
+VIT_E     = 'E'
+VIT_K     = 'K'
+CALCIUM   = 'calcium'
+IRON      = 'iron'
+POTASSIUM = 'potassium'
+NUTRIENTS = [VIT_A, VIT_B12, VIT_B6, VIT_C, VIT_E, VIT_K, CALCIUM, IRON, POTASSIUM]
 PROPERTY = 'calories'
 
 ALL_COLS = [NAME] + NUTRIENTS + [PROPERTY]
