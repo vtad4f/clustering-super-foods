@@ -39,8 +39,8 @@ def NetworkXGraph(graph):
    """
    nx_graph = nx.Graph()
    
-   for node in graph.nodes:
-      nx_graph.add_node(node.name)
+   for name in graph.nodes:
+      nx_graph.add_node(name)
       
    for edge in graph.edges:
       nx_graph.add_edge(*edge)

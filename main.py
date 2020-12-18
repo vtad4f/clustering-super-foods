@@ -54,7 +54,8 @@ if __name__ == '__main__':
       (offline.RandomClustering,  (1, 5), 5),
       (offline.KMeansClustering,  (2, 4), 5),
       (offline.SpectralClustering,(2, 4), 5),
-      (offline.GraphClustering1,  (2, 2), 1)
+      (offline.GraphClustering1,  (2, 2), 1),
+      (offline.GraphClustering2,  (2, 2), 50)
    ]:
       data.PrintBanner('-', '{0}, {1} run(s) {2}'.format(*map(data.PrettyString, [cluster_fcn, n_runs, offline.EVAL_FCNS])))
       data.PrettyPrint(*graph.Cluster(range_n_clusters, n_runs, cluster_fcn, measure.Deficiency))
