@@ -27,6 +27,7 @@ def _Totals(*clusters):
              2. Yield the sum of values for the selected nodes
              3. Iterate over every possible combination
    """
+   clusters = [c for c in clusters if c] # drop empty clusters
    iterator = MultiBaseNumber(*map(len, clusters))
    while iterator:
       yield _SumRows(*[clusters[c][n] for c,n in enumerate(iterator)])
